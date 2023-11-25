@@ -18,19 +18,19 @@ connection.connect((err) => {
 
 
   CREATE TABLE recipes (
-    recipes-ID INT PRIMARY KEY ,
+    recipes-id INT PRIMARY KEY ,
     name VARCHAR(255) NOT NULL
 );
 CREATE TABLE category (
-    category-ID INT PRIMARY KEY ,
+    category-id INT PRIMARY KEY ,
     name VARCHAR(255) NOT NULL
 );
 CREATE TABLE ingredient (
-    ingredient-ID INT PRIMARY KEY,
+    ingredient-id INT PRIMARY KEY,
     Name VARCHAR(255) NOT NULL
 );
 CREATE TABLE step (
-    tep-ID INT PRIMARY KEY,
+    tep-id INT PRIMARY KEY,
     description TEXT NOT NULL
 );
 
@@ -38,23 +38,23 @@ CREATE TABLE step (
 CREATE TABLE recipe-category (
     recipe-id INT,
     category-id INT,
-    PRIMARY KEY (recipe-ID, category-ID),
-    FOREIGN KEY (recipe-ID) REFERENCES recipe(recipe-ID),
-    FOREIGN KEY (category-ID) REFERENCES category(category-ID)
+    PRIMARY KEY (recipe-id, category-id),
+    FOREIGN KEY (recipe-id) REFERENCES recipe(recipe-id),
+    FOREIGN KEY (category-id) REFERENCES category(category-id)
 );
 CREATE TABLE recipe_ingredient (
-    recipe_id INT,
-    ingredient_id INT,
-    PRIMARY KEY (recipe-ID, ingredient-ID),
-    FOREIGN KEY (recipe-ID) REFERENCES recipe(recipe-ID),
-    FOREIGN KEY (ingredient-ID) REFERENCES ingredient(ingredientID)
+    recipe-id INT,
+    ingredient-id INT,
+    PRIMARY KEY (recipe-id, ingredient-id),
+    FOREIGN KEY (recipe-id) REFERENCES recipe(recipe-id),
+    FOREIGN KEY (ingredient-id) REFERENCES ingredient(ingredientID)
 );
 CREATE TABLE recipe-step (
-    recipe-ID INT,
-    step-ID INT,
-    PRIMARY KEY (recipe-ID, step-ID),
-    FOREIGN KEY (recipe-ID) REFERENCES recipe(recipe-ID),
-    FOREIGN KEY (step-ID) REFERENCES step(step_ID)
+    recipe-id INT,
+    step-id INT,
+    PRIMARY KEY (recipe-id, step-id),
+    FOREIGN KEY (recipe-id) REFERENCES recipe(recipe-id),
+    FOREIGN KEY (step-id) REFERENCES step(step-id)
 );
 
 INSERT INTO recipes (name) VALUES
@@ -121,7 +121,7 @@ INSERT INTO steps (description) VALUES
 ('Remove pan from fire');
 
 
-INSERT INTO recipe_category (recipe_id, category_id) VALUES
+INSERT INTO recipe_category (recipe-id, category-id) VALUES
 -- No-Bake Cheesecake
 (1, 1), 
 (1, 2), 
@@ -133,7 +133,7 @@ INSERT INTO recipe_category (recipe_id, category_id) VALUES
 (4, 6); 
 
 
-INSERT INTO recipe_ingredient (recipe_id, ingredient_id) VALUES
+INSERT INTO recipe_ingredient (recipe-id, ingredient-id) VALUES
 (1, 1), 
 (1, 2),
 (1, 3), 
@@ -155,7 +155,7 @@ INSERT INTO recipe_ingredient (recipe_id, ingredient_id) VALUES
 (4, 17), 
 (4, 9); 
 
-INSERT INTO recipe_step (recipe_id, step_id) VALUES
+INSERT INTO recipe_step (recipe-id, step-id) VALUES
 (1, 1), 
 (1, 2), 
 (1, 3), 
@@ -183,12 +183,12 @@ INSERT INTO recipe_step (recipe_id, step_id) VALUES
 
 SELECT recipe_name
 FROM recipe_Ingredient
-WHERE category_id = (SELECT category_ID FROM category WHERE name = 'Vegetarian')
+WHERE category-id = (SELECT category-id FROM category WHERE name = 'Vegetarian')
 AND ingredient_name = 'Potatoes';
 
 SELECT recipe_ingredient.recipe_name
 FROM recipe_Ingredient
-JOIN category ON recipe_ingredient.category_id = category.category_ID
+JOIN category ON recipe_ingredient.category-id = category.category-id
 WHERE category.name = 'Cake'
   AND recipe_ingredient.recipe_name NOT IN (
     SELECT RI2.recipe_name
@@ -198,11 +198,11 @@ WHERE category.name = 'Cake'
 
 SELECT recipe_name
 FROM recipe_ingredient
-WHERE category_id = (SELECT category_ID FROM category WHERE name = 'Vegan')
+WHERE category-id = (SELECT category-id FROM category WHERE name = 'Vegan')
 AND recipe_name IN (
     SELECT recipe_name
     FROM recipe_ingredient
-    WHERE category_id = (SELECT category_ID FROM category WHERE name = 'Japanese')
+    WHERE category-id = (SELECT category-id FROM category WHERE name = 'Japanese')
 );
 
 
