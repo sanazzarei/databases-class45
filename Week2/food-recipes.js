@@ -104,8 +104,8 @@ connection.connect((err) => {
     ('Preheat the oven'),
     ('Mix the ingredients in a bowl'),
     ('Spread the mix on baking sheet'),
-    ('Bake for 30'''),
-    ('Cook Macaroni for 8'''),
+    ('Bake for 30 minutes'),
+    ('Cook Macaroni for 8 minutes'),
     ('Melt butter in a saucepan'),
     ('Add flour, salt, pepper and mix'),
     ('Add Milk and mix'),
@@ -117,7 +117,7 @@ connection.connect((err) => {
     ('Add oil to a sauce pan'),
     ('Bring to medium heat'),
     ('Add some mix to the sauce pan'),
-    ('Let is cook for 1'''),
+    ('Let is cook for 1 minute'),
     ('Remove pan from fire');
 
     INSERT INTO recipe_category (recipe_id, category_id) VALUES
@@ -147,7 +147,7 @@ connection.connect((err) => {
     (3, 9), 
     (3, 8), 
     (3, 14), 
-    (4, 15), 
+    (3, 15), 
     (4, 16),
     (4, 17), 
     (4, 9); 
@@ -177,31 +177,35 @@ connection.connect((err) => {
     (4, 22), 
     (4, 23);
 
-    SELECT recipe_name
-    FROM recipe_ingredient
-    WHERE \`category-id\` = (SELECT category_id FROM categories WHERE name = 'Vegetarian')
-    AND ingredient_id = (SELECT ingredient_id FROM ingredients WHERE name = 'Potatoes');
+  SELECT DISTINCT R.name AS recipe_name
+  FROM recipes R
+  INNER JOIN recipe_ingredient RI ON R.recipe_id = RI.recipe_id
+  INNER JOIN ingredients I ON RI.ingredient_id = I.ingredient_id
+  WHERE I.name = 'Potatoes'
+  AND R.recipe_id IN (
+    SELECT RC.recipe_id
+    FROM recipe_category RC
+    INNER JOIN categories C ON RC.category_id = C.category_id
+    WHERE C.name = 'Vegetarian'
+  );
 
-    SELECT recipe_name
-    FROM recipe_ingredient
-    JOIN categories ON recipe_ingredient.\`category-id\` = categories.category_id
-    WHERE categories.name = 'Cake'
-      AND recipe_name NOT IN (
-        SELECT RI2.recipe_name
-        FROM recipe_ingredient RI2
-        JOIN ingredients ON RI2.\`ingredient-id\` = ingredients.ingredient_id
-        WHERE ingredients.name = 'Baking'
-    );
+  SELECT R.name AS recipe_name
+  FROM recipes R
+  INNER JOIN recipe_category RC ON R.recipe_id = RC.recipe_id
+  INNER JOIN categories C ON RC.category_id = C.category_id
+  WHERE C.name = 'Cake' AND R.recipe_id IN (
+    SELECT RC2.recipe_id
+    FROM recipe_category RC2
+    INNER JOIN categories C2 ON RC2.category_id = C2.category_id
+    WHERE C2.name = 'No-Bake'
+  );
 
-    SELECT recipe_name
-    FROM recipe_ingredient
-    WHERE \`category-id\` = (SELECT category_id FROM categories WHERE name = 'Vegan')
-    AND recipe_name IN (
-        SELECT recipe_name
-        FROM recipe_ingredient
-        WHERE \`category-id\` = (SELECT category_id FROM categories WHERE name = 'Japanese')
-    );
-
+  SELECT R.name AS recipe_name
+  FROM recipes R
+  INNER JOIN recipe_category RC ON R.recipe_id = RC.recipe_id
+  INNER JOIN categories C ON RC.category_id = C.category_id
+  WHERE C.name IN ('Vegan', 'Japanese')
+  GROUP BY R.name;
   `;
 
   connection.query(query, (error, results, fields) => {
