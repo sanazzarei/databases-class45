@@ -15,11 +15,12 @@ const setupQuery = `
   CREATE DATABASE \`meetup_mysql\`;
   USE \`meetup_mysql\`;
 
-  CREATE TABLE Invitee (
-    invitee_no INT AUTO_INCREMENT PRIMARY KEY,
-    invitee_name VARCHAR(255),
-    invited_by VARCHAR(255)
-  );
+ CREATE TABLE Invitee (
+  invitee_no INT AUTO_INCREMENT PRIMARY KEY,
+  invitee_name VARCHAR(255),
+  invited_by_invitee_no INT,
+  FOREIGN KEY (invited_by_invitee_no) REFERENCES Invitee(invitee_no)
+);
 
   CREATE TABLE Room (
     room_no INT AUTO_INCREMENT PRIMARY KEY,
@@ -36,8 +37,8 @@ const setupQuery = `
     FOREIGN KEY (room_no) REFERENCES Room(room_no)
   );
 
-  INSERT INTO Invitee (invitee_name, invited_by) VALUES
-    ('Amir Hossein', 'Sara Rahimi'),
+  INSERT INTO Invitee (invitee_name, invited_by_invitee_no) VALUES
+    ('Amir Hossein', 1),
     ('Narges Mohammadi', 'Ali Rezaei'),
     ('Maryam Esfahani', 'Mohammad Jafari'),
     ('Behzad Mahmoudi', 'Sara Ghasemi'),
