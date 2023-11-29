@@ -5,7 +5,7 @@ const connection = mysql.createConnection({
   user: "hyfuser",
   password: "hyfpassword",
   multipleStatements: true,
-  database : authors,
+  database : "authors",
 });
 connection.connect((err) => {
   if (err) throw err;
@@ -26,6 +26,20 @@ CREATE TABLE author_papers (
   FOREIGN KEY (author_id) REFERENCES authors(author_id),
   FOREIGN KEY (paper_id) REFERENCES research_Papers(paper_id)
 );
+
+SELECT a.author_name, m.author_name AS mentor_name
+FROM authors a
+LEFT JOIN authors m ON a.mentor = m.author_id;
+
+
+SELECT 
+  a.*, 
+  COALESCE(rp.paper_title, 'No paper published') AS published_paper
+FROM authors a
+LEFT JOIN 
+  author_papers ap ON a.author_id = ap.author_id
+LEFT JOIN 
+  research_papers rp ON ap.paper_id = rp.paper_id;
 
 
 
